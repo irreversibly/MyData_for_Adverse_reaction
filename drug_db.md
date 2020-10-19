@@ -25,11 +25,11 @@
 
     ![overall relation between database](/figures/overall_relation_nmldata.png)
     
-    ![SPL_RxNORM MAPPING](/figures/SPL_RxNORM mapping.png)
+    ![SPL_RxNORM MAPPING](/figures/SPL_RxNORM_mapping.png)
     
-    ![SPL-pharmacologc clss mapping](/figures/SPL-pharmacologc clss mapping.png)
+    ![SPL-pharmacologc clss mapping](/figures/SPL-pharmacologc_clss_mapping.png)
     
-    ![Zip file metadata](/figures/Zip file metadata.png)
+    ![Zip file metadata](/figures/Zip_file_metadata.png)
     
 
 
