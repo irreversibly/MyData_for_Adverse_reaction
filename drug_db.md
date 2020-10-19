@@ -24,8 +24,11 @@
 - 설명서
 
     ![overall relation between database](/figures/overall_relation_nmldata.png)
+    
     ![SPL_RxNORM MAPPING](/figures/SPL_RxNORM mapping.png)
+    
     ![SPL-pharmacologc clss mapping](/figures/SPL-pharmacologc clss mapping.png)
+    
     ![Zip file metadata](/figures/Zip file metadata.png)
     
 
