@@ -35,3 +35,20 @@
 2) openAPI 요청이 안되는 약제의 경우, 9자리 의약품표준코드의 끝자리가 잘못된 경우가 있을 수 있습니다. 해당 약제의 경우 마지막 자리를 0-5 정도까지 변경시키면서 작업을 하고, openAPI에서 찾아지는 경우 변경된 code 값을 따로 저장해주세요. 추후 확인해보겠습니다. 
 
 3) operation 작업의 횟수가 정해져있는 openAPI의 경우, data.go.kr에서 선생님 계정을 따로 만들어도 좋습니다.
+
+2020-10-19
+
+1) 첨가물 DB 관련 진행사항 확인
+2) 국가연구개발비로 만든 앱을 '저작권위원회' 저작권 등록(https://www.cros.or.kr/psnsys/cmmn/infoPage.do?w2xPath=/ui/twc/req/sw/regGidTxt.xml), sw 자산등록https://www.swbank.kr/rnd/swResultRegist.do) 절차 관련 확인
+3) 첨가물 app을 가급적이면 별도의 app으로 개발했으면 좋겠음 (연구결과 성과 등록 관련..)
+4) 미국 fda drug list 관련 db https://www.fda.gov/drugs/drug-approvals-and-databases/national-drug-code-directory)
+5) additives list 들어있는 주소: https://www.fda.gov/drugs/drug-approvals-and-databases/inactive-ingredients-database-download 근데 어떤 약제에 어떤 첨가물이 들어가 있는지 나와있지는 않네?
+6) 김미혜 교수님 contact 관련 문의
+7) 김미혜 교수님 헝 박사님 OCR 관련 기술 사용 가능할지 확인
+8) 홍대 미대 학생과 조인해서 UX/UI 디자인 - 약물 app 기능 설계
+9) 부작용 DB 자연어 차리가 가능할지 확인
+10) MedDRA 데이터베이스를 받을 수 있는지? 확인
+11) SIDER 4.1 database 구조 둘러보기
+
+
+
