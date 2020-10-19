@@ -1,4 +1,4 @@
-미국-NLM SPL source 
+## 미국-NLM SPL source 
 
 - 주소: https://dailymed.nlm.nih.gov/dailymed/index.cfm.
 - 파일 list
@@ -25,7 +25,7 @@
 
     ![overall relation between database](/figures/overall_relation_nmldata.png)
     
-    ![SPL_RxNORM MAPPING](/figures/SPL_RxNORM_mapping.png)
+    ![SPL_RxNORM MAPPING](/figures/SPL-RxNORM_mapping.png)
     
     ![SPL-pharmacologc clss mapping](/figures/SPL-pharmacologc_clss_mapping.png)
     
