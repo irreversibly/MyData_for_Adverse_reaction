@@ -25,7 +25,7 @@
 
     ![overall relation between database](/figures/overall_relation_nmldata.png)
     
-    ![SPL_RxNORM MAPPING](/figures/SPL-RxNORM_mapping.png)
+    ![SPL_RxNORM MAPPING](/figures/SPL-RxNORM_mappings.png)
     
     ![SPL-pharmacologc clss mapping](/figures/SPL-pharmacologc_clss_mapping.png)
     
