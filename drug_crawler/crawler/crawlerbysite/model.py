@@ -1,6 +1,9 @@
 from abc import *
 import requests
 from bs4 import BeautifulSoup
+import sys, os
+sys.path.append(os.path.abspath(os.path.dirname(os.path.abspath(os.path.dirname(__file__)))))
+
 
 class AbsCrawler(metaclass=ABCMeta):
 
@@ -13,9 +16,7 @@ class AbsCrawler(metaclass=ABCMeta):
 
     def _connect(self, keyword):
         api_url = self._url + self._service_keyword+self._service_key+self._order+keyword
-        print(api_url)
         html = requests.get(api_url).text
-        print(html)
         return html
 
     def _parsing(self, html):
