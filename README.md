@@ -50,5 +50,14 @@
 10) MedDRA 데이터베이스를 받을 수 있는지? 확인
 11) SIDER 4.1 database 구조 둘러보기
 
+2020-11-03
+
+1) MeDDRA 한국어 version download -> postgresql import done
+2) SIDER 4.1 version download -> postgresql import done
+3) 'Network analysis of drug side effects and indication' 논문 읽어보기  http://studentsrepo.um.edu.my/9478/6/Yousoff_Effendy_Mohd_Ali_-_Thesis.pdf
+4) biz.kpis.or.kr 데이터 import하기
+5) 건강보험급여되는 약제 pattern 처리후 파일 import 하기
+6) 미국 UMLS database import하기
+7) 미국 FAERS database import: https://github.com/ltscomputingllc/faersdbstats , https://www.nature.com/articles/sdata201626
 
 
