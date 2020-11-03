@@ -60,4 +60,5 @@
 6) 미국 UMLS database import하기
 7) 미국 FAERS database import: https://github.com/ltscomputingllc/faersdbstats , https://www.nature.com/articles/sdata201626
 
-
+김대식 선생님
+1) 첨가물 DB 작업 success : 약 15000개, fail: 10000개 (첫번째 숫자가 0인 경우 숫자형으로 변환되면 오류!! -> 수정 예정)
