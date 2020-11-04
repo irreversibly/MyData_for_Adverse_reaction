@@ -2,12 +2,32 @@
 
 from drug_crawler.read_data import model
 import openpyxl
+import os
+
+class ExcelWriter:
+
+    def __init__(self):
+        self._file_path = "./fail_code.xlsx"
+        if(not os.path.exists(self._file_path)):
+            f = open(self._file_path,'w')
+            f.close()
+
+    def write_csv(self, fail_list):
+        wb = openpyxl.workbook.Workbook()
+        fail_work = wb.active
+        fail_work.title = "fail"
+        for fail in fail_list:
+            fail_work.append(fail)
+        wb.save(self._file_path)
+        wb.close()
+
 
 
 class DrugTemplateExcelParser(model.AbsReadData):
 
     def __init__(self, file_path):
         self._file_path = file_path
+
 
     def read_data(self):
         result = []

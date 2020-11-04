@@ -142,6 +142,20 @@ class DBManager(AbsDBManager):
                 conn.close()
 
 
+    def select_all_main_code(self):
+        sql = "SELECT id,production_code FROM public_excel;"
+        conn = self._db_connect.connect()
+        result = -1
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(query=sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
     def select_main_code(self,main_ingr_code):
         sql = "SELECT id FROM main_code WHERE main_ingr_code = '" + main_ingr_code +"';"
         conn = self._db_connect.connect()
@@ -152,6 +166,76 @@ class DBManager(AbsDBManager):
                 result = cursor.fetchone()
             except Exception as ex:
                 print("expectation")
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def insert_public_data(self, data):
+        sql = "INSERT INTO public_data_portal" +data.get_data()
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(query=sql)
+                conn.commit()
+            except Exception as ex:
+                print(ex)
+                conn.close()
+                raise Exception
+            finally:
+                conn.close()
+
+    def select_fail_caused_one(self):
+        sql = "SELECT(excel.production_code) FROM public_excel AS excel INNER JOIN fail AS f ON excel.id = f.public_excel_id WHERE f.caused = 1;"
+        conn = self._db_connect.connect()
+        result = None
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def select_public_portal(self, public_id):
+        sql = "SELECT (id) FROM public_data_portal WHERE public_excel_id = " + str(public_id)
+        conn= self._db_connect.connect()
+        result = None
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(query= sql)
+                result = cursor.fetchone()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def select_fail(self,public_id):
+        sql = "SELECT (id) FROM fail WHERE public_excel_id = " + str(public_id)
+        conn = self._db_connect.connect()
+        result = None
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(query=sql)
+                result = cursor.fetchone()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def select_public_drug(self,public_id):
+        sql = "SELECT (production_code) FROM public_excel WHERE id = " + str(public_id)
+        conn = self._db_connect.connect()
+        result = None
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(query=sql)
+                result = cursor.fetchone()
+            except Exception as ex:
                 print(ex)
             finally:
                 conn.close()
@@ -168,3 +252,17 @@ class DBManager(AbsDBManager):
                 print(ex)
             finally:
                 conn.close()
+
+    def insertFail(self, data):
+        sql = "INSERT INTO fail (public_excel_id, caused) VALUES ("+ data.get_data() + ");"
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                conn.commit()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+
+

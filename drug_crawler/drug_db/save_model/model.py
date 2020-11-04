@@ -16,7 +16,7 @@ class BasicData:
     def get_data(self):
         sql = ""
         for i in range(len(self._preprocessing_data)-1):
-            if i==0 :
+            if i == 0 :
                 sql += str(self._preprocessing_data[i]) + ","
             else:
                 sql += "'" + self._preprocessing_data[i] +"', "
@@ -27,19 +27,46 @@ class BasicData:
         self._preprocessing_data[0] = f_key
 
 
-class Public_Data_Portal:
-    def __init__(self, crawling_data):
-        self.excel_data_key = crawling_data["excel_data_key"]
+class PublicCrawlingData:
+    def __init__(self, crawling_data, main_code_id):
+        self.crawling_data = crawling_data
+        self.main_code_id = main_code_id
+        self._isFinished = True
         self.item_name = crawling_data["item_name"]
-        self.item_seq = crawling_data["item_seq"]
-        self.entp_name = crawling_data["entp_name"]
-        self.class_no = crawling_data["class_no"]
-        self.bar_code = crawling_data["bar_code"]
-        self.material_name = crawling_data["material_name"]
-        self.edi_code = crawling_data["edi_code"]
-        self.main_item_ingr = crawling_data["main_item_ingr"]
-        self.ingr_name = crawling_data["ingr_name"]
-        self.nb_doc_data = crawling_data["nb_doc_data"]
+        if crawling_data["item_seq"] == -1:
+            self._isFinished = False;
+
+    def isFinishing(self):
+        return self._isFinished
+
+    def get_data(self):
+        section = "(public_excel_id,"
+        values = "(" + str(self.main_code_id) +","
+        for key in self.crawling_data.keys():
+            section += key+","
+            if key == "item_seq":
+                values += str(self.crawling_data[key]) +","
+            elif key == "item_seq":
+                values += str(self.crawling_data[key]) +","
+
+            elif key == "class_no":
+                if self.crawling_data[key]:
+                    values += "'" + self.crawling_data[key] +"',"
+                else:
+                    values += "NULL,"
+            elif key == "edi_code":
+                if self.crawling_data[key]:
+                    values += "'" + self.crawling_data[key] +"',"
+                else:
+                    values += "NULL,"
+            else:
+                values += "'" + self.crawling_data[key] +"' ,"
+        section = section[:section.rindex(",")]
+        values = values[:values.rindex(",")]
+        section += ")"
+        values += ")"
+
+        return section + " VALUES" + values
 
 class Main_Data:
 
@@ -57,5 +84,9 @@ class Main_Data:
         return self._main_ingr_code
 
 class Fail:
-    def __init__(self, production):
-        self.production = production
+    def __init__(self, main_code_id, caused):
+        self.main_code_id = main_code_id
+        self.caused = caused
+
+    def get_data(self):
+        return str(self.main_code_id) + " , " + str(self.caused)

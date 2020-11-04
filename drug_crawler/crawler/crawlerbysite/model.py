@@ -15,7 +15,7 @@ class AbsCrawler(metaclass=ABCMeta):
         self._parsing_keyword = parsing_keyword
 
     def _connect(self, keyword):
-        api_url = self._url + self._service_keyword+self._service_key+self._order+keyword
+        api_url = self._url + self._service_keyword+self._service_key+self._order+str(keyword)
         html = requests.get(api_url).text
         return html
 
@@ -26,7 +26,7 @@ class AbsCrawler(metaclass=ABCMeta):
             try:
                 result[keyword] = soup.select(keyword)[0].text.strip()
             except:
-                print(keyword)
+                result[keyword] = -1
         return result
 
     def operating(self, keyword):

@@ -10,6 +10,45 @@ class AbsDataCollector(metaclass=ABCMeta):
     def operating(self, data):
         pass
 
+class CrawlingDataCollector(AbsDataCollector):
+    def __init__(self):
+        self._db_manager = DBManager()
+
+    def operating(self, data):
+        pass
+
+    def get_code_data(self):
+        return self._db_manager.select_all_main_code()
+
+    def select_fail_caused_one(self):
+        return self._db_manager.select_fail_caused_one()
+
+    def select_public_or_fail(self, public_id):
+        public = self._db_manager.select_public_portal(public_id)
+        fail = self._db_manager.select_fail(public_id)
+        result = None
+
+        if (not public) and (not fail):
+            result = self._db_manager.select_public_drug(public_id)
+
+        return result
+
+    def saveCrawlingData(self, codeId, crawlingData):
+        crawlingModel = PublicCrawlingData(main_code_id=codeId , crawling_data=crawlingData)
+        if crawlingModel.isFinishing():
+            try:
+                self._db_manager.insert_public_data(crawlingModel)
+            except:
+                self.saveFail(codeId = codeId, caused=3)
+        else:
+            self.saveFail(codeId=codeId, caused=1)
+
+    def saveFail(self, codeId, caused):
+        failData = Fail(codeId,caused)
+        self._db_manager.insertFail(failData)
+
+
+
 class AbsPreProcessingCollector(AbsDataCollector):
     def __init__(self):
         AbsDataCollector.__init__(self=self)
