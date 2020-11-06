@@ -7,7 +7,7 @@ import os
 class ExcelWriter:
 
     def __init__(self):
-        self._file_path = "./fail_code.xlsx"
+        self._file_path = "./2020-11-06.xlsx"
         if(not os.path.exists(self._file_path)):
             f = open(self._file_path,'w')
             f.close()
@@ -24,7 +24,6 @@ class ExcelWriter:
 
 
 class DrugTemplateExcelParser(model.AbsReadData):
-
     def __init__(self, file_path):
         self._file_path = file_path
 

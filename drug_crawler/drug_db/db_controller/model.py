@@ -39,8 +39,10 @@ class CrawlingDataCollector(AbsDataCollector):
             try:
                 self._db_manager.insert_public_data(crawlingModel)
             except:
+                # print("status : 3")
                 self.saveFail(codeId = codeId, caused=3)
         else:
+            # print("status : 1")
             self.saveFail(codeId=codeId, caused=1)
 
     def saveFail(self, codeId, caused):

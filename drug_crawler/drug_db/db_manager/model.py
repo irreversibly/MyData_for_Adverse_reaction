@@ -186,7 +186,7 @@ class DBManager(AbsDBManager):
                 conn.close()
 
     def select_fail_caused_one(self):
-        sql = "SELECT(excel.production_code) FROM public_excel AS excel INNER JOIN fail AS f ON excel.id = f.public_excel_id WHERE f.caused = 1;"
+        sql = "SELECT excel.id, excel.production_code FROM public_excel AS excel INNER JOIN fail AS f ON excel.id = f.public_excel_id WHERE f.caused = 1;"
         conn = self._db_connect.connect()
         result = None
         with conn.cursor() as cursor:
