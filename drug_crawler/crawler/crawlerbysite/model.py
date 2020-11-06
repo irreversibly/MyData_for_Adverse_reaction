@@ -15,7 +15,11 @@ class AbsCrawler(metaclass=ABCMeta):
         self._parsing_keyword = parsing_keyword
 
     def _connect(self, keyword):
-        api_url = self._url + self._service_keyword+self._service_key+self._order+str(keyword)
+        keyword = str(keyword)
+        if len(keyword) == 8:
+            keyword = "0" + keyword
+        print(keyword)
+        api_url = self._url + self._service_keyword+self._service_key+self._order+keyword
         html = requests.get(api_url).text
         return html
 
