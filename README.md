@@ -61,4 +61,72 @@
 7) 미국 FAERS database import: https://github.com/ltscomputingllc/faersdbstats , https://www.nature.com/articles/sdata201626
 
 김대식 선생님
-1) 첨가물 DB 작업 success : 약 15000개, fail: 10000개 (첫번째 숫자가 0인 경우 숫자형으로 변환되면 오류!! -> 수정 예정)
+1) 첨가물 DB 작업 success : 약 15000개, fail: 10000개 (첫번째 숫자가 0인 경우 숫자형으로 변환되면 오류!! -> 수정 예정) 
+
+- '약제급여목록및급여상한금액표(2020.7.1.)(25,608)_6.30.수정.xlsx' 파일로부터 추출한 의약품표준코드가 opendata.go.kr 사이트에서 'MdcinPrductPrmisnInfoService/getMdcinPrductItem'에서 'Barcode'를 서비스 키로 자료를 요청했을 때 ping 값이 없는 값이 약 10000개 정도 됨. 
+- 데이터를 들여다보면 'MdcinPrductPrmisnInfoService/getMdcinPrductItem' 오퍼레이션에는 'ITEM_SEQ', 'BAR_CODE', 'EDI_CODE' 이렇게 세가지 코드값이 있음. 
+- 이중에서 '약제급여목록및급여상한금액표(2020.7.1.)(25,608)_6.30.수정.xlsx' 파일에는 'EDI_CODE' 변수값만 있고, 'BarCodeData_202010.txt' 파일에는 '품목기준코드', '전문/일반	대표코드', '표준코드', '제품코드(개정후)' 값이 있음. 
+- 오퍼레이션의 'ITEM_SEQ' = '품목기준코드', 'BAR_CODE' = '표준코드', 'EDI_Code' = '제품코드(개정후)' 로 매핑됨
+
+2020-11-09
+
+1) 이전 만들었던 python 코드를 수정해서 다음의 내용을 수행할 수 있도록 해주세요. 
+
+- 'data' 폴더의 'BarCodeData_202010.txt' 파일의 '품목기준코드'를 기준으로 'MdcinPrductPrmisnInfoService/getMdcinPrductItem' 오퍼레이션 데이터를 저장했으면 좋겠습니다.
+- 파싱한 파일 자체를 다음의 규칙으로 naming : '품목기준코드_한글상품명_업체명_약품규격.xmls' 
+-- 단 '한글상품명'은 정규표현식 처리를 해서 '한글상품명' 필드값 중에서 첫번째 '('가 나오기 전까지 값을 추출해서 xlms 파일 naming에 사용
+- 추출가능한 모든 값을 저장 (밑의 변수를 대상으로 해주세요)
+
+    ITEM_SEQ
+    ITEM_NAME
+    ENTP_NAME
+    ITEM_PERMIT_DATE
+    CNSGN_MANUF
+    ETC_OTC_OCDE
+    CLASS_NO
+    CHART
+    BAR_CODE
+    MATERIAL_NAME
+    EE_DOC_ID
+    UD_DOC_ID
+    NB_DOC_ID
+    INSERT_FILE
+    STORAGE_METHOD
+    VALID_TERM
+    REEXAM_TARGET
+    REEXAM_DATE
+    PACK_UNIT
+    EDI_CODE
+    DOC_TEXT
+    PERMIT_KIND_NAME
+    ENTP_NO
+    MAKE_MATERIAL_FLAG
+    NEWDRUG_CLASS_NAME
+    INDUTY_TYPE
+    CANCEL_DATE
+    CANCEL_NAME
+    CHANGE_DATE
+    NARCOTIC_KIND_CODE
+    GBN_NAME
+    EE_DOC_DATA
+    UD_DOC_DATA
+    NB_DOC_DATA
+    PN_DOC_DATA
+    MAIN_ITEM_INGR
+    INGR_NAME
+
+-- EE_DOC_DATA, UD_DOC_DATA, NB_DOC_DATA, PN_DOC_DATA에는 긴 text 값을 우선 저장하고, 다음과 같이 각각 변수를 분리.
+--- EE_DOC_DATA: 예를들면 'ARTICLE title=' 뒷부분, '<![CDATA[ '  뒷부분 값을 파싱. 각각 여러 값일 수 있음. '<![CDATA[ 류마티스관절염, 강직척추염, 골관절염(퇴행관절염) 및 견갑상완골의 관절주위염, 치통, 외상 후 생기는 염증, 요통, 좌골통, 비관절성 류머티즘으로 인한 통증 ]]>' 이부분 중에서 '류마티스관절염' 부터 '통증' 부분까지 잡아내면 됨. 해당 파트가 여러개일 수 있으나 모두 한 필드에 저장
+--- US_DOC_DATA: EE_DOC_DATA와 동일하게 처리
+--- NB_DOC_DATA: 복잡함. '1.  경고', 	'2. 다음 환자(경우)에는 투여하지 말 것.', '3. 다음 환자에는 신중히 투여할 것.', 	'4. 이상반응'. '5. 일반적 주의'. '6. 상호작용', '7. 임부 및 수유부에 대한 투여', '8. 소아에 대한 투여', '9. 고령자에 대한 투여', '10. 과량투여 시의 처치', '11. 보관 및 취급상의 주의사항', '10. 기타' 등이 있음. 각각의 값들은 '<ARTICLE title="1. 다음 환자에게는 투여하지 말 것">'처럼 되어 있는데, 'ARTICLE title='으로 잡은 다음에 '1. '같은 숫자 부분은 제외하고, 다음 값들을 별도의 변수명으로 잡아서, 하위에 해당하는 갑들 중 '<!CDATA[ ' 뒷부분을 각각 있는만큼 추출. 각 변수들은 'NB_DOC_DATA_(경고)', 'NB_DOC_DATA_(다음 환자(경우)에는 투여하지 말 것' 등으로 명명. 
+ 
+2) 데이터 저장 공간 등이 문제가 될 것 같으면, 
+  
+- IP: 221.160.191.58
+- PORT: 3389
+- ID: mingyu, PW: lemonpa2 또는 ID: kdy, PW: kdykdy
+- DBeaver나 PgAdmin으로 접속
+- DB_name = 'drug_db' 등에서 작업을 해도 됩니다. 아마 접속 PW: postgre 일겁니다. 
+
+
+https://biz.kpis.or.kr/kpis_biz/index.jsp
