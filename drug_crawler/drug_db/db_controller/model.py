@@ -1,7 +1,12 @@
 from abc import *
 from ..save_model.model import *
 from ..db_manager.model import *
+from ..error_model.model import *
 
+
+#DBManager를 생성해주는 최상위 Controller 클래스
+#operating은 추상메소드로 AbsDataCollector를 상속받는 자식클래스에
+# 자식클래스가 중점적으로 작업해야하는 내용을 입력하면 된다
 class AbsDataCollector(metaclass=ABCMeta):
     def __init__(self):
         self._db_manager = DBManager()
@@ -9,6 +14,50 @@ class AbsDataCollector(metaclass=ABCMeta):
     @abstractmethod
     def operating(self, data):
         pass
+
+# item_seq를 이용하여 생성된 데이터와 관련된 Controller
+class ProductionCodeController(AbsDataCollector):
+
+    #nb_doc_data의 파싱이 실패한 데이터를 저장하는 함수
+    def insert_nb_doc_fail(self, item_seq, ex):
+        self._db_manager.insert_nb_doc_fail(item_seq, ex)
+    #item_seq 목록및 해당 약제를 DB에서 가져오는 함수
+    def select_production_code(self):
+        return self._db_manager.select_production_code()
+
+    #item_seq 크롤링 데이터 저장함수
+    def operating(self, data):
+        if not data["ITEM_NAME"] == -1:
+            productionCodeModel = ProductionCodeModel(data)
+            self._db_manager.insert_model(productionCodeModel)
+        else:
+            self.save_fail(data["ITEM_SEQ"], "Not Found")
+
+    #크롤링 도중 에러가 발생한 약제의 item_seq를 저장하는 함수
+    def save_fail(self, productionCode, caused):
+        failModel = ProductionFail(productionCode, caused)
+        self._db_manager.insert_model(failModel)
+
+    #중복 item_seq를 제거하고 DB에 item_seq를 저장하는 함수
+    def save_item_seq(self,productionCodeList):
+        self._db_manager.save_item_seq(productionCodeList)
+
+    #크롤링이 성공한 데이터를 갖고오는 함수
+    def select_working(self):
+        return self._db_manager.select_working()
+
+    # 크롤링이 성공한 데이터를 범위를 지정하여 갖고오는 함수
+    def select_success_item_seq(self, first, last):
+        return self._db_manager.select_success_item_seq(first=first, last=last)
+
+    #크롤링이 실패한 데이터를 갖고오는 함수
+    def select_fail_item_seq(self):
+        return self._db_manager.select_fail_item_seq()
+
+    #nb_doc_data 엄데이트 함수
+    def update_nb_doc_data(self, data, id):
+        self._db_manager.update_nb_doc_data(data,id)
+
 
 class CrawlingDataCollector(AbsDataCollector):
     def __init__(self):

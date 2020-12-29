@@ -4,23 +4,38 @@ from drug_crawler.read_data import model
 import openpyxl
 import os
 
+#Excel파일 생성 클래스
 class ExcelWriter:
 
     def __init__(self):
-        self._file_path = "./2020-11-06.xlsx"
-        if(not os.path.exists(self._file_path)):
+        self._file_path = "./2020-12-23fail.xlsx" #저장파일 경로지정
+        if(not os.path.exists(self._file_path)): #파일이 없다면 생성해준다
             f = open(self._file_path,'w')
             f.close()
 
-    def write_csv(self, fail_list):
+    def write_csv(self, fail_list):     #fail_list는 엑셀에 저장할 데이터 목록
         wb = openpyxl.workbook.Workbook()
         fail_work = wb.active
         fail_work.title = "fail"
-        for fail in fail_list:
+        for fail in fail_list: # 데이터를 엑셀파일에 기록한다
             fail_work.append(fail)
         wb.save(self._file_path)
         wb.close()
 
+
+class ProductionCodeParser(model.AbsReadData):
+    def __init__(self, file_path):
+        self._file_path = file_path
+
+    def read_data(self):
+        result = []
+        try:
+            with open(self._file_path, "r", encoding="utf-8") as f:
+                result = f.readlines()
+                f.close()
+        except Exception as ex:
+            print(ex)
+        return result
 
 
 class DrugTemplateExcelParser(model.AbsReadData):
