@@ -1,6 +1,9 @@
 import pymysql
 from abc import *
 
+from drug_crawler.drug_db.dberror.db_error import DBSQLError
+
+
 class SingletonInstane:
   __instance = None
 
@@ -95,6 +98,109 @@ class DBManager(AbsDBManager):
     def __init__(self):
         AbsDBManager.__init__(self = self)
 
+    def insert_nb_doc_fail(self, id, ex):
+        sql = "INSERT INTO nb_doc_fail(item_seq,caused) VALUES ('" + id+"' '"+ex +"')"
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+
+    def select_production_code(self):
+        sql = "SELECT item_seq FROM drug_item;"
+        result = []
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def save_item_seq(self, productionCodeLsit):
+        sql = "INSERT INTO drug_item(item_seq) VALUES(%s)"
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.executemany(sql, productionCodeLsit)
+                conn.commit()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+
+    def select_fail_item_seq(self):
+        sql = "SELECT DISTINCT item_seq, caused FROM production_code_fail;"
+        result = -1
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def select_success_item_seq(self, first, last):
+        sql = "SELECT id ,item_seq FROM item_seq_code WHERE id BETWEEN " + str(first) +" AND " + str(last) +";"
+        result = -1;
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def update_nb_doc_data(self,data, id):
+        sql = "UPDATE item_seq_code SET nb_doc_data ='" + data + "' WHERE item_seq = '" + id +"';"
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                conn.commit()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+
+
+    def select_working(self):
+        sql = "SELECT DISTINCT(item_seq_code.item_seq) FROM item_seq_code;"
+        result = -1
+        conn = self._db_connect.connect()
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+            except Exception as ex:
+                print(ex)
+            finally:
+                conn.close()
+        return result
+
+    def insert_model(self,model):
+        sql = "INSERT INTO " + model.get_db_name() + "(" + model.get_column() + ") VALUES (" + model.get_value()+");"
+        conn = self._db_connect.connect()
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute(sql)
+                conn.commit()
+                conn.close()
+        except Exception as ex:
+            raise DBSQLError()
+
     def create_table(self, table_name):
         sql = "CREATE TABLE " + table_name + " (" \
                                              "id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY," \
@@ -186,7 +292,7 @@ class DBManager(AbsDBManager):
                 conn.close()
 
     def select_fail_caused_one(self):
-        sql = "SELECT(excel.production_code) FROM public_excel AS excel INNER JOIN fail AS f ON excel.id = f.public_excel_id WHERE f.caused = 1;"
+        sql = "SELECT excel.id, excel.production_code FROM public_excel AS excel INNER JOIN fail AS f ON excel.id = f.public_excel_id WHERE f.caused = 1;"
         conn = self._db_connect.connect()
         result = None
         with conn.cursor() as cursor:
@@ -264,5 +370,4 @@ class DBManager(AbsDBManager):
                 print(ex)
             finally:
                 conn.close()
-
 

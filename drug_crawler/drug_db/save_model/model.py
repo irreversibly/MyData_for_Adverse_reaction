@@ -1,3 +1,5 @@
+from drug_crawler.drug_db.error_model import *
+
 class Excel_Data:
     def __init__(self,preprocessing_data):
         self._preprocessing_data = preprocessing_data
@@ -8,6 +10,50 @@ class Excel_Data:
         # print(data)
         # data = str(self.main_ingr_code) +"," + str(self.production_code) + "," + str(self.company) + "," + str(self.name) + "," + str(self.ingredient) + "," + str(self.conc) + "," + str(self.condition) + "," + str(self.form) + "," + str(self.formulation) + "," + str(self.amt_num) + "," + str(self.amt_unit)
         return data
+
+class ProductionFail:
+
+    def __init__(self, productionCode, caused):
+        self._db_name = "production_code_fail"
+        self._key = "item_seq, caused"
+        self._value = "'" + productionCode+"', '" +caused+"'"
+
+    def get_column(self):
+        return self._key
+
+    def get_value(self):
+        return self._value
+
+    def get_db_name(self):
+        return self._db_name
+
+class ProductionCodeModel:
+
+    def __init__(self, preprocessing_data):
+        self._db_name = "Item_seq_code"
+        self._preprocessing_data = preprocessing_data
+        self._sql_column = ""
+        self._sql_value = ""
+        for key in self._preprocessing_data.keys():
+            self._sql_column += key.lower()+", "
+            if self._preprocessing_data[key]:
+                if not isinstance(self._preprocessing_data, str):
+                    self._sql_value += "'" + str(self._preprocessing_data[key]) + "' ,"
+                else:
+                    self._sql_value += "'" + self._preprocessing_data[key]+"' ,"
+            else:
+                self._sql_value += "'NULL',"
+        self._sql_column = self._sql_column[:self._sql_column.rfind(",")]
+        self._sql_value = self._sql_value[:self._sql_value.rfind(",")]
+
+    def get_column(self):
+        return self._sql_column
+
+    def get_value(self):
+        return self._sql_value
+
+    def get_db_name(self):
+        return self._db_name
 
 class BasicData:
     def __init__(self, preprocessing_data):
